@@ -1,16 +1,24 @@
-import AnecdoteForm from "./components/AnecdoteForm"
+/* eslint-disable no-unused-vars */
+import React, { useEffect } from "react";
+/* eslint-enable no-unused-vars */
+import { useDispatch } from "react-redux"
+import { initializeAnecdotes } from "./reducers/anecdoteReducer"
 import AnecdoteList from "./components/AnecdoteList"
-import Filter from "./components/Filter"
+import AnecdoteForm from "./components/AnecdoteForm"
 
 const App = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeAnecdotes())
+  }, [dispatch])
+
   return (
     <div>
-      <h2>Anecdotes</h2>
-      <Filter />
-      <AnecdoteList />
       <AnecdoteForm />
+      <AnecdoteList />
     </div>
-  )
+  ) 
 }
 
 export default App
