@@ -9,7 +9,7 @@ export const getAll = async () => {
   return anecdotes
 }
 
-export const createNew = async (content) => {
+export const createAnecdote = async (content) => {
   const newId =
     anecdotes.length > 0
       ? Math.max(...anecdotes.map((anecdote) => anecdote.id)) + 1
@@ -19,9 +19,9 @@ export const createNew = async (content) => {
     content,
     votes: 0,
   }
-  const newAnecdotes = [...anecdotes, newAnecdote] // Create a new array with the new anecdote
-  anecdotes = newAnecdotes // Update the anecdotes variable
-  return newAnecdote
+  const newAnecdotes = [...anecdotes, newAnecdote]
+  anecdotes = newAnecdotes
+  return newAnecdote // Make sure to return the new anecdote object
 }
 
 export const vote = async (id) => {
@@ -31,4 +31,4 @@ export const vote = async (id) => {
   return anecdotes.find((anecdote) => anecdote.id === id)
 }
 
-export default { getAll, createNew, vote }
+export default { getAll, createAnecdote, vote }

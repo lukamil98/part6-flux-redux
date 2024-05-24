@@ -6,9 +6,9 @@ const AnecdoteForm = () => {
 
   const addAnecdote = (event) => {
     event.preventDefault()
-    const content = event.target.anecdote.value
-    event.target.anecdote.value = ""
-    dispatch(createAnecdote(content))
+    const content = event.target.anecdote.value // Capture the content from the form field
+    event.target.anecdote.value = "" // Clear the form field after capturing the content
+    dispatch(createAnecdote({ content })) // Dispatch the action with the content as payload
   }
 
   return (
