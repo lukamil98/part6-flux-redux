@@ -1,32 +1,20 @@
-// src/reducers/anecdoteReducer.js
 import { createSlice } from "@reduxjs/toolkit"
-import anecdoteService from "../services/anecdotes"
 import { setNotificationWithTimeout } from "./notificationReducer"
+import axios from "axios"
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState: [],
   reducers: {
     createAnecdote(state, action) {
-      const { content } = action.payload
-      const newId =
-        state.length > 0
-          ? Math.max(...state.map((anecdote) => anecdote.id)) + 1
-          : 1
-      const newAnecdote = {
-        content,
-        id: newId,
-        votes: 0, // Initial votes is set to 0
-      }
-      return [...state, newAnecdote]
+      state.push(action.payload)
     },
     voteAnecdote(state, action) {
       const id = action.payload
       const anecdoteToChange = state.find((anecdote) => anecdote.id === id)
       if (anecdoteToChange) {
         anecdoteToChange.votes += 1
-        // Sort state in place
-        state.sort((a, b) => b.votes - a.votes)
+        state.sort((a, b) => b.votes - a.votes) // Sort anecdotes by votes
       }
     },
     setAnecdotes(state, action) {
@@ -38,30 +26,49 @@ const anecdoteSlice = createSlice({
 export const { createAnecdote, voteAnecdote, setAnecdotes } =
   anecdoteSlice.actions
 
-export const initializeAnecdotes = () => {
-  return async (dispatch) => {
-    const anecdotes = await anecdoteService.getAll()
-    dispatch(setAnecdotes(anecdotes))
-  }
-}
-
 export const addNewAnecdote = (content) => {
   return async (dispatch) => {
-    const newAnecdote = await anecdoteService.createNew(content)
-    dispatch(createAnecdote(newAnecdote))
-    dispatch(
-      setNotificationWithTimeout(`Created new anecdote: "${content}"`, 5000)
-    )
+    try {
+      const response = await axios.post("http://localhost:3001/anecdotes", {
+        content,
+        votes: 0,
+      })
+      dispatch(createAnecdote(response.data))
+      dispatch(
+        setNotificationWithTimeout(`Created new anecdote: "${content}"`, 5000)
+      )
+    } catch (error) {
+      console.error("Failed to create new anecdote:", error.message)
+      dispatch(
+        setNotificationWithTimeout(
+          "Failed to create new anecdote",
+          5000,
+          "error"
+        )
+      )
+    }
   }
 }
 
 export const voteForAnecdote = (id) => {
   return async (dispatch) => {
-    await anecdoteService.vote(id)
-    dispatch(voteAnecdote(id))
-    dispatch(
-      setNotificationWithTimeout(`Voted for anecdote with id: ${id}`, 5000)
-    )
+    try {
+      const anecdote = await axios.get(`http://localhost:3001/anecdotes/${id}`)
+      const updatedAnecdote = {
+        ...anecdote.data,
+        votes: anecdote.data.votes + 1,
+      }
+      await axios.put(`http://localhost:3001/anecdotes/${id}`, updatedAnecdote)
+      dispatch(voteAnecdote(id))
+      dispatch(
+        setNotificationWithTimeout(`Voted for anecdote with id: ${id}`, 5000)
+      )
+    } catch (error) {
+      console.error("Failed to vote for anecdote:", error.message)
+      dispatch(
+        setNotificationWithTimeout("Failed to vote for anecdote", 5000, "error")
+      )
+    }
   }
 }
 

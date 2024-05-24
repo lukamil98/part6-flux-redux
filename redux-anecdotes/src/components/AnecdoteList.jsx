@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
-import { voteAnecdote } from "../reducers/anecdoteReducer"
+import { voteForAnecdote } from "./actionCreators/anecdoteActions"
 import { setNotificationWithTimeout } from "../reducers/notificationReducer"
 import Filter from "./Filter"
 
@@ -8,27 +8,22 @@ const AnecdoteList = () => {
   const filter = useSelector((state) => state.filter || "")
   const dispatch = useDispatch()
 
-  console.log("Anecdotes State:", anecdotes)
-  console.log("Filter State:", filter)
-
   if (!anecdotes) {
     return <div>Loading...</div>
   }
 
-  const filteredAnecdotes = anecdotes.filter((anecdote) => {
-    if (!anecdote.content) return false
-    return anecdote.content.toLowerCase().includes(filter.toLowerCase())
-  })
+  const filteredAnecdotes = anecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(filter.toLowerCase())
+  )
 
   const vote = (id, content) => {
-    dispatch(voteAnecdote(id))
-    // Dispatch the notification action with a timeout and dynamic message
+    dispatch(voteForAnecdote(id))
     dispatch(setNotificationWithTimeout(`You voted: "${content}"`, 5000))
   }
 
   return (
     <div>
-      <Filter /> {/* Render the Filter component */}
+      <Filter />
       {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
