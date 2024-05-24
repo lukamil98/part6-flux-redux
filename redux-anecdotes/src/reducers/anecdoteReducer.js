@@ -14,8 +14,8 @@ const anecdoteSlice = createSlice({
           ? Math.max(...state.map((anecdote) => anecdote.id)) + 1
           : 1
       const newAnecdote = {
-        id: newId,
         content,
+        id: newId,
         votes: 0, // Initial votes is set to 0
       }
       return [...state, newAnecdote]
