@@ -5,11 +5,11 @@ let anecdotes = [
   { id: 3, content: "Mock Anecdote 3", votes: 0 },
 ]
 
-const getAll = async () => {
+export const getAll = async () => {
   return anecdotes
 }
 
-const createNew = async (content) => {
+export const createNew = async (content) => {
   const newId =
     anecdotes.length > 0
       ? Math.max(...anecdotes.map((anecdote) => anecdote.id)) + 1
@@ -24,8 +24,7 @@ const createNew = async (content) => {
   return newAnecdote
 }
 
-
-const vote = async (id) => {
+export const vote = async (id) => {
   anecdotes = anecdotes.map((anecdote) =>
     anecdote.id === id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote
   )
