@@ -10,22 +10,26 @@ const getAll = async () => {
 }
 
 const createNew = async (content) => {
+  const newId =
+    anecdotes.length > 0
+      ? Math.max(...anecdotes.map((anecdote) => anecdote.id)) + 1
+      : 1
   const newAnecdote = {
-    id: anecdotes.length + 1,
+    id: newId,
     content,
     votes: 0,
   }
-  anecdotes = anecdotes.concat(newAnecdote)
+  const newAnecdotes = [...anecdotes, newAnecdote] // Create a new array with the new anecdote
+  anecdotes = newAnecdotes // Update the anecdotes variable
   return newAnecdote
 }
 
+
 const vote = async (id) => {
-  const anecdoteToChange = anecdotes.find((anecdote) => anecdote.id === id)
-  if (anecdoteToChange) {
-    anecdoteToChange.votes += 1
-    return anecdoteToChange
-  }
-  return null
+  anecdotes = anecdotes.map((anecdote) =>
+    anecdote.id === id ? { ...anecdote, votes: anecdote.votes + 1 } : anecdote
+  )
+  return anecdotes.find((anecdote) => anecdote.id === id)
 }
 
 export default { getAll, createNew, vote }
