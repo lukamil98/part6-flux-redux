@@ -1,13 +1,19 @@
 import { createRoot } from "react-dom/client"
-import { Provider } from "react-redux"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import App from "./src/App"
-import store from "./store"
+import { Provider } from "react-redux" // Import Provider from React Redux
+import store from "./store" // Import your Redux store
 
+const queryClient = new QueryClient()
 const container = document.getElementById("root")
 const root = createRoot(container)
 
+// Wrap your App component with QueryClientProvider and pass the queryClient instance
+// Also, wrap it with Provider and pass the Redux store
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </QueryClientProvider>
 )

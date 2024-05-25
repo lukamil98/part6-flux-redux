@@ -1,11 +1,10 @@
-import { useDispatch } from "react-redux"
-import { setFilter } from "../reducers/filterReducer"
+// src/components/Filter.js
 
-const Filter = () => {
-  const dispatch = useDispatch()
+import PropTypes from "prop-types"
 
+const Filter = ({ setFilter }) => {
   const handleChange = (event) => {
-    dispatch(setFilter(event.target.value))
+    setFilter(event.target.value)
   }
 
   const style = {
@@ -17,6 +16,10 @@ const Filter = () => {
       filter <input onChange={handleChange} />
     </div>
   )
+}
+
+Filter.propTypes = {
+  setFilter: PropTypes.func.isRequired,
 }
 
 export default Filter
