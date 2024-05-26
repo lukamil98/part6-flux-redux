@@ -1,4 +1,4 @@
-import { createContext, useReducer, useContext } from "react"
+import { createContext, useReducer, useContext, useEffect } from "react"
 import PropTypes from "prop-types"
 
 const NotificationContext = createContext()
@@ -22,12 +22,25 @@ const notificationReducer = (state, action) => {
 export const NotificationProvider = ({ children }) => {
   const [state, dispatch] = useReducer(notificationReducer, initialState)
 
+  useEffect(() => {
+    // Clear notification after 5 seconds if it's a failure notification
+    if (state.message && state.message.startsWith("Failed to add anecdote")) {
+      const timeoutId = setTimeout(() => {
+        dispatch({ type: "CLEAR_NOTIFICATION" })
+      }, 5000)
+
+      // Clear the timeout if the component unmounts or if state.message changes
+      return () => clearTimeout(timeoutId)
+    }
+  }, [state.message])
+
   return (
     <NotificationContext.Provider value={{ state, dispatch }}>
       {children}
     </NotificationContext.Provider>
   )
 }
+
 
 NotificationProvider.propTypes = {
   children: PropTypes.node.isRequired,

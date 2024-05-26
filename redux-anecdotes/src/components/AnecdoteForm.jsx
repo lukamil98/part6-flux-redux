@@ -20,9 +20,10 @@ const AnecdoteForm = () => {
     },
     onError: (error) => {
       console.error("An error occurred:", error.message)
+      let errorMessage = error.message + ": It must be at least 5 characters long."
       dispatch({
         type: "SET_NOTIFICATION",
-        payload: "Failed to add anecdote: " + error.message,
+        payload: errorMessage,
       })
     },
   })
