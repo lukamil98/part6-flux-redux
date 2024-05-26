@@ -1,15 +1,18 @@
-// src/components/Notification.jsx
-import { useSelector } from "react-redux"
+import { useNotification } from "../context/NotificationContext"
 
 const Notification = () => {
-  const notification = useSelector((state) => state.notification)
+  const { state } = useNotification()
+
+  if (!state.isVisible) return null
+
   const style = {
     border: "solid",
     padding: 10,
     borderWidth: 1,
-    display: notification ? "block" : "none",
+    display: state.isVisible ? "block" : "none",
   }
-  return <div style={style}>{notification}</div>
+
+  return <div style={style}>{state.message}</div>
 }
 
 export default Notification

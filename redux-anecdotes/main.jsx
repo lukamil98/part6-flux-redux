@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import App from "./src/App"
+import { NotificationProvider } from "./src/context/NotificationContext"
 import { Provider } from "react-redux" // Import Provider from React Redux
 import store from "./store" // Import your Redux store
 
@@ -13,7 +14,11 @@ const root = createRoot(container)
 root.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
+      </QueryClientProvider>
     </Provider>
   </QueryClientProvider>
 )

@@ -1,10 +1,13 @@
-// src/components/Filter.js
-
 import PropTypes from "prop-types"
+import { useState } from "react" // Import useState
 
 const Filter = ({ setFilter }) => {
+  const [inputValue, setInputValue] = useState("") // State to store input value
+
   const handleChange = (event) => {
-    setFilter(event.target.value)
+    const value = event.target.value
+    setInputValue(value) // Update input value state
+    setFilter(value) // Call setFilter with the input value
   }
 
   const style = {
@@ -13,7 +16,8 @@ const Filter = ({ setFilter }) => {
 
   return (
     <div style={style}>
-      filter <input onChange={handleChange} />
+      filter <input value={inputValue} onChange={handleChange} />{" "}
+      {/* Bind input value and onChange handler */}
     </div>
   )
 }

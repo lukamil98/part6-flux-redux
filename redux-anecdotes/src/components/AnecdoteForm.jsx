@@ -1,30 +1,49 @@
-import { useDispatch } from "react-redux"
-import anecdotes from "../services/anecdotes" // Import the createNewAnecdote function from your service file
-import { createAnecdote } from "../reducers/anecdoteReducer" // Import the action creator
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createNewAnecdote } from "../services/anecdotes"
+import { useNotification } from "../context/NotificationContext"
 
 const AnecdoteForm = () => {
-  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+  const { dispatch } = useNotification()
+
+  const mutation = useMutation({
+    mutationFn: createNewAnecdote,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["anecdotes"])
+      dispatch({
+        type: "SET_NOTIFICATION",
+        payload: "New anecdote added",
+      })
+      setTimeout(() => {
+        dispatch({ type: "CLEAR_NOTIFICATION" })
+      }, 5000)
+    },
+    onError: (error) => {
+      console.error("An error occurred:", error.message)
+      dispatch({
+        type: "SET_NOTIFICATION",
+        payload: "Failed to add anecdote: " + error.message,
+      })
+    },
+  })
 
   const addAnecdote = async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
-
-    // Call the createNewAnecdote function to create a new anecdote
-    const newAnecdote = await anecdotes.createNewAnecdote(content)
-
-    // Dispatch an action to update the Redux store with the new anecdote
-    dispatch(createAnecdote(newAnecdote))
-
-    event.target.anecdote.value = "" // Clear the form field after capturing the content
+    event.target.anecdote.value = ""
+    mutation.mutate(content)
   }
 
   return (
-    <form onSubmit={addAnecdote}>
-      <div>
-        <input name="anecdote" />
-      </div>
-      <button type="submit">Create</button>
-    </form>
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={addAnecdote}>
+        <div>
+          <input name="anecdote" />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
   )
 }
 

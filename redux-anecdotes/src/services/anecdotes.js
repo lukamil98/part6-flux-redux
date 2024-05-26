@@ -6,7 +6,10 @@ export const getAll = async () => {
   return data
 }
 
+// services/anecdoteService.js
+
 export const createNewAnecdote = async (content) => {
+  console.log("Content received in createNewAnecdote:", content)
   const response = await fetch(baseUrl, {
     method: "POST",
     headers: {
@@ -14,8 +17,13 @@ export const createNewAnecdote = async (content) => {
     },
     body: JSON.stringify({ content, votes: 0 }),
   })
-  const data = await response.json()
-  return data
+
+  if (response.ok) {
+    const data = await response.json()
+    return data
+  } else {
+    throw new Error("Failed to create new anecdote")
+  }
 }
 
 export const vote = async (id, newVoteCount) => {
